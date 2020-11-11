@@ -1,0 +1,34 @@
+import 'package:agroquimica/data/entities/usere_entities.dart';
+import 'package:agroquimica/data/repository/factadmin_repository.dart';
+import 'package:agroquimica/data/repository/factadmin_repositoryimp.dart';
+import 'package:get_it/get_it.dart';
+import 'package:http/http.dart' as http;
+
+import 'cubit/adminstates_cubit.dart';
+
+/// service locator
+final sl = GetIt.instance;
+
+Future<void> init() async {
+  sl.registerFactory(() => AdminstatesCubit(
+      sl(),
+      [],
+      UserEEntities(
+          nombre: null,
+          apellido: null,
+          correo: null,
+          contrasena: null,
+          pais: null,
+          ciudad: null,
+          coddir: null,
+          direccion: null,
+          tipo: null,
+          numeracion: null,
+          numerotelf: null,
+          codciudad: null,
+          codpais: null,
+          codcli: null)));
+  sl.registerLazySingleton<IFacturaAdminRepository>(
+      () => FacturaAdminRepositoryimp(httpClient: sl()));
+  sl.registerLazySingleton(() => http.Client());
+}

@@ -1,0 +1,172 @@
+import 'dart:async';
+
+import 'package:agroquimica/data/entities/direccion/direccion_entities.dart';
+import 'package:agroquimica/data/entities/productos_entities.dart';
+import 'package:agroquimica/data/entities/user_entities.dart';
+import 'package:agroquimica/data/entities/usere_entities.dart';
+import 'package:bloc/bloc.dart';
+import 'package:meta/meta.dart';
+
+import 'package:agroquimica/data/entities/detallefact_entities.dart';
+import 'package:agroquimica/data/entities/factura_entities.dart';
+import 'package:agroquimica/data/repository/factadmin_repository.dart';
+
+part 'adminstates_state.dart';
+
+class AdminstatesCubit extends Cubit<AdminstatesState> {
+  List<ProductosEntities> carrito;
+  double totalfacturar = 0.0;
+  UserEEntities userEEntities;
+  final IFacturaAdminRepository facturaAdminRepository;
+  AdminstatesCubit(
+      this.facturaAdminRepository, this.carrito, this.userEEntities)
+      : super(AdminstatesInitial());
+  // Future<void> getfactura() async {
+  //   emit(AdminstatesLoadingFact());
+  //   final failOrsucess = await this.facturaAdminRepository.getFactura();
+  //   failOrsucess.fold(
+  //     (failure) => emit(AdminstatesError(message: failure.message)),
+  //     (facturaEntities) =>
+  //         emit(AdminstatesLoadFact(facturaEntities: facturaEntities)),
+  //   );
+  // }
+
+  Future<void> setUser(String user, String password) async {
+    final failureOrUnit =
+        await this.facturaAdminRepository.getUserE(user, password);
+
+    failureOrUnit.fold(
+      (failure) => emit(AdminstatesError(message: failure.message)),
+      (unit) => userEEntities = unit,
+    );
+  }
+
+  Future<bool> validateUser(String user, String password) async {
+    final failOrsucess =
+        await this.facturaAdminRepository.validateUser(user, password);
+    bool f = false;
+    f = failOrsucess.fold(
+      (failure) {
+        emit(AdminstatesError(message: failure.message));
+        return false;
+      },
+      (flag) {
+        f = flag;
+        return f;
+      },
+    );
+    print(f);
+    return f;
+  }
+
+  Future<bool> validateUsername(String user) async {
+    final failOrsucess =
+        await this.facturaAdminRepository.validateUsername(user);
+    bool f = false;
+    f = failOrsucess.fold(
+      (failure) {
+        emit(AdminstatesError(message: failure.message));
+        return false;
+      },
+      (flag) {
+        f = flag;
+        return f;
+      },
+    );
+    return f;
+  }
+
+  Future<void> createUser(UserEEntities userEntity) async {
+    final failureOrUnit =
+        await this.facturaAdminRepository.createUser(userEntity);
+
+    failureOrUnit.fold(
+      (failure) => emit(AdminstatesError(message: failure.message)),
+      (unit) => AdminstatesCreated(),
+    );
+  }
+
+  Future<void> getDireccionInit(String query) async {
+    emit(AdminstatesLoadingdir());
+    final failureOrUnit = await this.facturaAdminRepository.getDireccion(query);
+    failureOrUnit.fold(
+      (failure) {
+        emit(AdminstatesError(message: failure.message));
+      },
+      (direccion) {
+        emit(AdminstatesLoadeddir(direccionEntities: direccion));
+      },
+    );
+  }
+
+  Future<List<DireccionEntities>> getDireccion(String query) async {
+    final failureOrUnit = await this.facturaAdminRepository.getDireccion(query);
+    List<DireccionEntities> list = [];
+    list = failureOrUnit.fold(
+      (failure) {
+        emit(AdminstatesError(message: failure.message));
+        return [];
+      },
+      (direccion) {
+        list = direccion;
+        return list;
+      },
+    );
+    return list;
+  }
+
+  Future<void> getProductos() async {
+    emit(AdminstatesloadingProd());
+    final failureOrUnit = await this.facturaAdminRepository.getProductos();
+    failureOrUnit.fold(
+      (failure) {
+        emit(AdminstatesError(message: failure.message));
+      },
+      (producto) {
+        emit(AdminstatesloadedProd(productosEntities: producto));
+      },
+    );
+  }
+
+  void addcarrito(ProductosEntities producto) {
+    emit(Adminstatesloadedcarrito());
+    carrito.add(producto);
+  }
+
+  void setcantven(int index, int cantidad) {
+    carrito[index].setCantidadven(cantidad.toString());
+    emit(Adminstatesloadedcarrito());
+  }
+
+//si retorna 0 hay un error
+  Future<int> createFactura(FacturaEntities factura) async {
+    final failOrsucess =
+        await this.facturaAdminRepository.createFactura(factura);
+    int numerofactura = 0;
+    numerofactura = failOrsucess.fold(
+      (failure) {
+        emit(AdminstatesError(message: failure.message));
+        return numerofactura;
+      },
+      (numfactura) {
+        numerofactura = numfactura;
+        return numerofactura;
+      },
+    );
+    return numerofactura;
+  }
+
+  //si retorna 0 hay un error
+  Future<void> createDetalleFactura(List<DetallefactEntities> factura) async {
+    final failOrsucess =
+        await this.facturaAdminRepository.createdetalleFactura(factura);
+    failOrsucess.fold(
+      (failure) {
+        emit(AdminstatesError(message: failure.message));
+      },
+      (numfactura) {
+        emit(AdminstatesCreated());
+      },
+    );
+  }
+}
