@@ -33,44 +33,53 @@ class SignupPageState extends State<SignupPage> {
     super.initState();
   }
 
+  int _indexstep = 0;
+  bool complete = false;
+  void goTo(int step) {
+    setState(() {
+      _indexstep = step;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(),
         body: BlocConsumer<AdminstatesCubit, AdminstatesState>(
-      listener: (context, state) {
-        if (state is AdminstatesError) {
-          Scaffold.of(context)
-              .showSnackBar(SnackBar(content: Text(state.message)));
-        }
-      },
-      builder: (context, state) {
-        if (state is AdminstatesLoadingdir) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (state is AdminstatesLoadeddir) {
-          return buildbody(context, state);
-        } else {
-          return Center(
-            child: Text("Cargando..."),
-          );
-        }
-      },
-    ));
+          listener: (context, state) {
+            if (state is AdminstatesError) {
+              Scaffold.of(context)
+                  .showSnackBar(SnackBar(content: Text(state.message)));
+            }
+          },
+          builder: (context, state) {
+            if (state is AdminstatesLoadingdir) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (state is AdminstatesLoadeddir) {
+              return buildbody(context, state);
+            } else {
+              return Center(
+                child: Text("Cargando..."),
+              );
+            }
+          },
+        ));
   }
 
   Widget buildbody(BuildContext context, AdminstatesLoadeddir state) {
     pais = state.direccionEntities;
-
     Size size = MediaQuery.of(context).size;
-    return SingleChildScrollView(
-      child: Container(
-        child: Form(
-          key: _formKey,
-          child: Center(
+
+    List<Step> steps = [
+      Step(
+          title: Text("USUARIO"),
+          content: Form(
+            key: _formKey,
             child: Column(
               children: [
-                SizedBox(height: 320.0),
+                SizedBox(height: 20.0),
                 Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(40.0),
@@ -91,6 +100,7 @@ class SignupPageState extends State<SignupPage> {
                     },
                   ),
                 ),
+                SizedBox(height: 20.0),
                 Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(40.0),
@@ -111,6 +121,7 @@ class SignupPageState extends State<SignupPage> {
                     },
                   ),
                 ),
+                SizedBox(height: 20.0),
                 Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(40.0),
@@ -121,12 +132,12 @@ class SignupPageState extends State<SignupPage> {
                   child: TextFormField(
                     controller: _emailtextController,
                     decoration: InputDecoration(
-                        labelText: "Email", icon: Icon(Icons.person)),
+                        labelText: "Email", icon: Icon(Icons.email)),
                     validator: (value) {
                       if (value.length > 0) {
                         return null;
                       } else {
-                        return "Debe introducir un username";
+                        return "Debe introducir un Email";
                       }
                     },
                   ),
@@ -142,7 +153,7 @@ class SignupPageState extends State<SignupPage> {
                   child: TextFormField(
                     controller: _passwordtextController,
                     decoration: InputDecoration(
-                        labelText: "Password", icon: Icon(Icons.person)),
+                        labelText: "Password", icon: Icon(Icons.lock)),
                     validator: (value) {
                       if (value.length > 0) {
                         if (value.length < 6) {
@@ -155,9 +166,16 @@ class SignupPageState extends State<SignupPage> {
                     },
                   ),
                 ),
-                SizedBox(
-                  height: 20.0,
-                ),
+                SizedBox(height: 20.0),
+              ],
+            ),
+          )),
+      Step(
+          title: Text("DIRECCIÓN"),
+          content: Form(
+            key: _formKey,
+            child: Column(
+              children: [
                 //pais
                 DropdownButton<DireccionEntities>(
                   hint: Text(paistit),
@@ -178,6 +196,7 @@ class SignupPageState extends State<SignupPage> {
                     });
                   },
                 ),
+                SizedBox(height: 20.0),
                 //provincia
                 DropdownButton<DireccionEntities>(
                   hint: Text(ciudadtit),
@@ -195,6 +214,7 @@ class SignupPageState extends State<SignupPage> {
                   },
                   // value: "Ciudad",
                 ),
+                SizedBox(height: 20.0),
                 Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(40.0),
@@ -205,7 +225,7 @@ class SignupPageState extends State<SignupPage> {
                   child: TextFormField(
                     controller: _referenciatextController,
                     decoration: InputDecoration(
-                        labelText: "Dirección", icon: Icon(Icons.person)),
+                        labelText: "Dirección", icon: Icon(Icons.map)),
                     validator: (value) {
                       if (value.length > 0) {
                         return null;
@@ -215,114 +235,171 @@ class SignupPageState extends State<SignupPage> {
                     },
                   ),
                 ),
-                //tipo documento
-                DropdownButton<String>(
-                  hint: Text(tiposel),
-                  items: tipo.map((dropdownstringitem) {
-                    return DropdownMenuItem<String>(
-                      child: Text(dropdownstringitem),
-                      value: dropdownstringitem,
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      tiposel = value;
-                    });
-                  },
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(40.0),
-                      color: Colors.grey),
-                  width: size.width * 0.8,
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-                  child: TextFormField(
-                    controller: _numeraciontextController,
-                    decoration: InputDecoration(
-                        labelText: "Numeración", icon: Icon(Icons.person)),
-                    validator: (value) {
-                      if (value.length > 0) {
-                        return null;
-                      } else {
-                        return "Debe introducir una numeración";
-                      }
-                    },
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(40.0),
-                      color: Colors.grey),
-                  width: size.width * 0.8,
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-                  child: TextFormField(
-                    controller: _numeroteltextController,
-                    decoration: InputDecoration(
-                        labelText: "Número de Telefono",
-                        icon: Icon(Icons.person)),
-                    validator: (value) {
-                      if (value.length > 0) {
-                        return null;
-                      } else {
-                        return "Debe introducir un número";
-                      }
-                    },
-                  ),
-                ),
-                RaisedButton(
-                  onPressed: () async {
-                    if (_formKey.currentState.validate()) {
-                      final email = _emailtextController.text;
-                      final password = _passwordtextController.text;
-                      bool flag = true;
-                      flag = await context
-                          .read<AdminstatesCubit>()
-                          .validateUsername(email);
-                      if (flag) {
-                        Scaffold.of(context).showSnackBar(SnackBar(
-                            content: Text("Este usuario ya esta creado")));
-                      } else {
-                        final userEtity = UserEEntities(
-                            nombre: _nombretextController.text,
-                            apellido: _apellidotextController.text,
-                            correo: email,
-                            contrasena: password,
-                            codpais: codpais,
-                            pais: "un",
-                            codciudad: codprov,
-                            ciudad: "una",
-                            coddir: "1",
-                            direccion: _referenciatextController.text,
-                            tipo: tiposel,
-                            numeracion: _numeraciontextController.text,
-                            numerotelf: _numeroteltextController.text,
-                            codcli: null);
-                        await context
-                            .bloc<AdminstatesCubit>()
-                            .createUser(userEtity);
-                        context
-                            .bloc<AdminstatesCubit>()
-                            .setUser(email, password);
-                        Navigator.pushNamedAndRemoveUntil(
-                            context, '/menu', (_) => false);
-                      }
-                      _nombretextController.clear();
-                      _emailtextController.clear();
-                      _passwordtextController.clear();
-                      _referenciatextController.clear();
-                      _apellidotextController.clear();
-                      _numeraciontextController.clear();
-                      _numeroteltextController.clear();
+                SizedBox(height: 20.0),
+              ],
+            ),
+          )),
+      Step(
+          title: Text("FINAL"),
+          state: StepState.complete,
+          content: Column(
+            children: [
+              //tipo documento
+              DropdownButton<String>(
+                hint: Text(tiposel),
+                items: tipo.map((dropdownstringitem) {
+                  return DropdownMenuItem<String>(
+                    child: Text(dropdownstringitem),
+                    value: dropdownstringitem,
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    tiposel = value;
+                  });
+                },
+              ),
+              SizedBox(height: 20.0),
+              Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(40.0),
+                    color: Colors.grey),
+                width: size.width * 0.8,
+                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+                child: TextFormField(
+                  controller: _numeraciontextController,
+                  decoration: InputDecoration(
+                      labelText: "Numeración", icon: Icon(Icons.credit_card)),
+                  validator: (value) {
+                    if (value.length > 0) {
+                      return null;
+                    } else {
+                      return "Debe introducir una numeración";
                     }
                   },
                 ),
+              ),
+              SizedBox(height: 20.0),
+              Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(40.0),
+                    color: Colors.grey),
+                width: size.width * 0.8,
+                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+                child: TextFormField(
+                  controller: _numeroteltextController,
+                  decoration: InputDecoration(
+                      labelText: "Número de Telefono",
+                      icon: Icon(Icons.phone_android)),
+                  validator: (value) {
+                    if (value.length > 0) {
+                      return null;
+                    } else {
+                      return "Debe introducir un número";
+                    }
+                  },
+                ),
+              ),
+              SizedBox(height: 20.0),
+            ],
+          )),
+    ];
+    return Stepper(
+      steps: steps,
+      type: StepperType.horizontal,
+      currentStep: _indexstep,
+      onStepTapped: (value) => goTo(value),
+      controlsBuilder: (BuildContext context,
+          {VoidCallback onStepContinue, VoidCallback onStepCancel}) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Container(
+                  child: RaisedButton(
+                    onPressed: () async {
+                      if (_indexstep + 1 != steps.length) {
+                        //if (_formKey.currentState.validate()) {
+                        goTo(_indexstep + 1);
+                        //}
+                      } else {
+                        setState(() => complete = true);
+                      }
+                      if (_indexstep == 2) {
+                        if (_formKey.currentState.validate()) {
+                          final email = _emailtextController.text;
+                          final password = _passwordtextController.text;
+                          bool flag = true;
+                          flag = await context
+                              .read<AdminstatesCubit>()
+                              .validateUsername(email);
+                          if (flag) {
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                                content: Text("Este usuario ya esta creado")));
+                          } else {
+                            final userEtity = UserEEntities(
+                                nombre: _nombretextController.text,
+                                apellido: _apellidotextController.text,
+                                correo: email,
+                                contrasena: password,
+                                codpais: codpais,
+                                pais: "un",
+                                codciudad: codprov,
+                                ciudad: "una",
+                                coddir: "1",
+                                direccion: _referenciatextController.text,
+                                tipo: tiposel,
+                                numeracion: _numeraciontextController.text,
+                                numerotelf: _numeroteltextController.text,
+                                codcli: null);
+                            await context
+                                .bloc<AdminstatesCubit>()
+                                .createUser(userEtity);
+                            context
+                                .bloc<AdminstatesCubit>()
+                                .setUser(email, password);
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, '/menu', (_) => false);
+                          }
+                          _nombretextController.clear();
+                          _emailtextController.clear();
+                          _passwordtextController.clear();
+                          _referenciatextController.clear();
+                          _apellidotextController.clear();
+                          _numeraciontextController.clear();
+                          _numeroteltextController.clear();
+                        }
+                      }
+                    },
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(40.0),
+                    ),
+                    child: Text("Siguiente"),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 44.0, vertical: 14.0),
+                  ),
+                ),
+                Container(
+                  child: RaisedButton(
+                    onPressed: () {
+                      _indexstep - 1 >= 0
+                          ? goTo(_indexstep - 1)
+                          : setState(() => complete = false);
+                    },
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(40.0),
+                    ),
+                    child: Text("Atras"),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 44.0, vertical: 14.0),
+                  ),
+                ),
               ],
-            ),
-          ),
-        ),
-      ),
+            );
+          },
+        );
+      },
     );
   }
 }

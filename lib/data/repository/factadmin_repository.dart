@@ -4,6 +4,7 @@ import 'package:agroquimica/data/entities/detallefact_entities.dart';
 import 'package:agroquimica/data/entities/direccion/direccion_entities.dart';
 import 'package:agroquimica/data/entities/image_entities.dart';
 import 'package:agroquimica/data/entities/productos_entities.dart';
+import 'package:agroquimica/data/entities/recomendacion/recomendacion_entities.dart';
 import 'package:agroquimica/data/entities/user_entities.dart';
 import 'package:agroquimica/data/entities/usere_entities.dart';
 import 'package:dartz/dartz.dart';
@@ -23,6 +24,7 @@ abstract class IFacturaAdminRepository {
   Future<Either<Failure, Unit>> createUser(UserEEntities usuario);
   Future<Either<Failure, List<DireccionEntities>>> getDireccion(String query);
   Future<Either<Failure, List<ProductosEntities>>> getProductos();
+  Future<Either<Failure, List>> getRecomendacion(String query);
 }
 
 abstract class Failure {

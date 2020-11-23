@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+
+import 'package:agroquimica/data/models/recomendacion/recomendacion_model.dart';
 import 'package:path/path.dart';
 import 'package:agroquimica/data/entities/detallefact_entities.dart';
 import 'package:agroquimica/data/entities/direccion/direccion_entities.dart';
@@ -27,7 +29,7 @@ class FacturaAdminRepositoryimp implements IFacturaAdminRepository {
   FacturaAdminRepositoryimp({
     @required this.httpClient,
   });
-  final _url = "https://11ff11d56092.ngrok.io";
+  final _url = "https://31cefa96283a.ngrok.io";
 
   // @override
   // Future<Either<Failure, FacturaEntities>> getFactura() {
@@ -224,7 +226,7 @@ class FacturaAdminRepositoryimp implements IFacturaAdminRepository {
       if (listdirection.isNotEmpty) {
         return Right(listdirection);
       } else {
-        return Left(const FactAdminFailure(message: "usuario vacio"));
+        return Left(const FactAdminFailure(message: "direccion vacio"));
       }
     } catch (e) {
       return Left(
@@ -311,6 +313,33 @@ class FacturaAdminRepositoryimp implements IFacturaAdminRepository {
       return Right(imageModelFromJson(resp));
     } catch (e) {
       return Left(const FactAdminFailure(message: "Conexion Fallida"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List>> getRecomendacion(String query) async {
+    try {
+      final response =
+          await this.httpClient.get(_url + "/recomendacion" + query);
+
+      if (response.statusCode != 200) {
+        return Left(
+            const FactAdminFailure(message: "something was wrong in getdata"));
+      }
+      List listrecom;
+      if (query.contains("&codenfermedad=")) {
+        listrecom = productosModelFromJson(response.body);
+      } else {
+        listrecom = recomendacionesModelFromJson(response.body);
+      }
+      if (listrecom.isNotEmpty) {
+        return Right(listrecom);
+      } else {
+        return Left(const FactAdminFailure(message: "recomendacion vacia"));
+      }
+    } catch (e) {
+      return Left(
+          const FactAdminFailure(message: "something was wrong in getdata"));
     }
   }
 }

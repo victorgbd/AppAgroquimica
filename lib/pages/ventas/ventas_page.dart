@@ -424,7 +424,7 @@ class ProductosSearch extends SearchDelegate<ProductosEntities> {
                                             .addcarrito(lista[index]);
                                       }
                                     },
-                                    child: Text("OK")),
+                                    child: Text("AGREGAR")),
                                 FlatButton(
                                     onPressed: () {
                                       Navigator.of(context).pop();

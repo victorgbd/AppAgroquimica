@@ -71,3 +71,13 @@ class ImageStateLoaded extends AdminstatesState {
 }
 
 class ImageStateLoading extends AdminstatesState {}
+
+class AdminstateloadingRecomendacion extends AdminstatesState {}
+
+class AdminstateloadedRecomendacion extends AdminstatesState {
+  final List<RecomendacionesEntities> recomendacionesEntites;
+
+  AdminstateloadedRecomendacion({this.recomendacionesEntites});
+}
+
+class AdminstateloadedRecomendacion2 extends AdminstatesState {}

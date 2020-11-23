@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../menu_page.dart';
+
 class DeteccionPage extends StatefulWidget {
   @override
   DeteccionPageState createState() => DeteccionPageState();
@@ -159,6 +161,7 @@ class DeteccionPageState extends State<DeteccionPage> {
           )),
     ];
     return Scaffold(
+      endDrawer: UserDrawer(),
       appBar: AppBar(
         title: Text("Detección de enfermedad de plantas"),
       ),
@@ -202,7 +205,7 @@ class DeteccionPageState extends State<DeteccionPage> {
                               : setState(() => complete = true);
                         },
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
+                          borderRadius: BorderRadius.circular(40.0),
                         ),
                         child: Text("Siguiente"),
                         padding: EdgeInsets.symmetric(
@@ -217,7 +220,7 @@ class DeteccionPageState extends State<DeteccionPage> {
                               : setState(() => complete = false);
                         },
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
+                          borderRadius: BorderRadius.circular(40.0),
                         ),
                         child: Text("Atras"),
                         padding: EdgeInsets.symmetric(

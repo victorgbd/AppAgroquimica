@@ -1,6 +1,8 @@
 import 'package:agroquimica/cubit/adminstates_cubit.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -48,7 +50,7 @@ class LoginPageState extends State<LoginPage> {
                   child: TextFormField(
                     controller: _usertextController,
                     decoration: InputDecoration(
-                        labelText: "Email", icon: Icon(Icons.person)),
+                        labelText: "Email", icon: Icon(Icons.email)),
                     validator: (value) {
                       if (value.length > 0) {
                         return null;
@@ -69,7 +71,7 @@ class LoginPageState extends State<LoginPage> {
                   child: TextFormField(
                     controller: _passwordtextController,
                     decoration: InputDecoration(
-                        labelText: "Password", icon: Icon(Icons.person)),
+                        labelText: "Password", icon: Icon(Icons.lock)),
                     validator: (value) {
                       if (value.length > 0) {
                         return null;
@@ -83,10 +85,24 @@ class LoginPageState extends State<LoginPage> {
                   height: 20.0,
                 ),
                 RaisedButton(
+                  child: Text('SIGN IN'),
                   onPressed: () async {
                     if (_formKey.currentState.validate()) {
                       final user = _usertextController.text;
                       final password = _passwordtextController.text;
+                      // try {
+                      //   //await Firebase.initializeApp();
+                      //   User fuser = (await FirebaseAuth.instance
+                      //           .signInWithEmailAndPassword(
+                      //               email: user, password: password))
+                      //       .user;
+                      //   if (fuser != null) {
+                      //     Navigator.pushNamedAndRemoveUntil(
+                      //         context, '/menu', (_) => false);
+                      //   }
+                      // } on FirebaseAuthException catch (e) {
+                      //   print(e);
+                      // }
                       bool flag = true;
                       flag = await context
                           .read<AdminstatesCubit>()
@@ -104,6 +120,11 @@ class LoginPageState extends State<LoginPage> {
                       _passwordtextController.clear();
                     }
                   },
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 54.0, vertical: 24.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40.0),
+                  ),
                 ),
               ],
             ),

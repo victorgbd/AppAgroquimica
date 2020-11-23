@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:agroquimica/data/entities/direccion/direccion_entities.dart';
 import 'package:agroquimica/data/entities/image_entities.dart';
 import 'package:agroquimica/data/entities/productos_entities.dart';
+import 'package:agroquimica/data/entities/recomendacion/recomendacion_entities.dart';
 import 'package:agroquimica/data/entities/user_entities.dart';
 import 'package:agroquimica/data/entities/usere_entities.dart';
 import 'package:bloc/bloc.dart';
@@ -186,5 +187,58 @@ class AdminstatesCubit extends Cubit<AdminstatesState> {
         emit(ImageStateLoaded(imageEntities));
       },
     );
+  }
+
+  Future<void> getRecomendacionInit(String query) async {
+    emit(AdminstateloadingRecomendacion());
+    final failureOrUnit =
+        await this.facturaAdminRepository.getRecomendacion(query);
+    failureOrUnit.fold(
+      (failure) {
+        emit(AdminstatesError(message: failure.message));
+      },
+      (recomendacion) {
+        emit(AdminstateloadedRecomendacion(
+            recomendacionesEntites: recomendacion));
+      },
+    );
+  }
+
+  Future<List> getRecomendacion(String query) async {
+    final failureOrUnit =
+        await this.facturaAdminRepository.getRecomendacion(query);
+    List list = [];
+    list = failureOrUnit.fold(
+      (failure) {
+        emit(AdminstatesError(message: failure.message));
+        return list;
+      },
+      (direccion) {
+        list = direccion;
+        return list;
+      },
+    );
+    return list;
+  }
+
+  void setcantvenrec(List<RecomendacionesEntities> recomendacion) {
+    emit(AdminstateloadedRecomendacion(recomendacionesEntites: recomendacion));
+  }
+
+  void addcarritorec(List<RecomendacionesEntities> recomendacion,
+      List<ProductosEntities> producto) {
+    var flag = true;
+    producto.forEach((elementi) {
+      flag = true;
+      carrito.forEach((elementj) {
+        if (elementj.codproducto == elementi.codproducto) {
+          flag = false;
+        }
+      });
+      if (flag) {
+        carrito.add(elementi);
+      }
+    });
+    emit(AdminstateloadedRecomendacion(recomendacionesEntites: recomendacion));
   }
 }
