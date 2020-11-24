@@ -79,5 +79,3 @@ class AdminstateloadedRecomendacion extends AdminstatesState {
 
   AdminstateloadedRecomendacion({this.recomendacionesEntites});
 }
-
-class AdminstateloadedRecomendacion2 extends AdminstatesState {}

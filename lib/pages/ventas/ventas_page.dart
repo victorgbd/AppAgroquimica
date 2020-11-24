@@ -40,6 +40,37 @@ class VentasPageState extends State<VentasPage> {
               },
             ),
             IconButton(
+              icon: Icon(Icons.verified_user),
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    child: AlertDialog(
+                      content: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Image(
+                              height: 256.0,
+                              width: 256.0,
+                              image: AssetImage('assets/check_animation.gif'),
+                            ),
+                            SizedBox(
+                              height: 20.0,
+                            ),
+                            Text('Compra realizada existosamente'),
+                          ],
+                        ),
+                      ),
+                      actions: [
+                        FlatButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('CANCELAR'))
+                      ],
+                    ));
+              },
+            ),
+            IconButton(
               icon: Icon(Icons.fact_check),
               onPressed: () {
                 showDialog(

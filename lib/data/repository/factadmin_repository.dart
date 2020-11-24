@@ -4,7 +4,6 @@ import 'package:agroquimica/data/entities/detallefact_entities.dart';
 import 'package:agroquimica/data/entities/direccion/direccion_entities.dart';
 import 'package:agroquimica/data/entities/image_entities.dart';
 import 'package:agroquimica/data/entities/productos_entities.dart';
-import 'package:agroquimica/data/entities/recomendacion/recomendacion_entities.dart';
 import 'package:agroquimica/data/entities/user_entities.dart';
 import 'package:agroquimica/data/entities/usere_entities.dart';
 import 'package:dartz/dartz.dart';

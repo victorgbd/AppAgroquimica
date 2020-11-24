@@ -242,66 +242,124 @@ class SignupPageState extends State<SignupPage> {
       Step(
           title: Text("FINAL"),
           state: StepState.complete,
-          content: Column(
-            children: [
-              //tipo documento
-              DropdownButton<String>(
-                hint: Text(tiposel),
-                items: tipo.map((dropdownstringitem) {
-                  return DropdownMenuItem<String>(
-                    child: Text(dropdownstringitem),
-                    value: dropdownstringitem,
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    tiposel = value;
-                  });
-                },
-              ),
-              SizedBox(height: 20.0),
-              Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(40.0),
-                    color: Colors.grey),
-                width: size.width * 0.8,
-                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-                child: TextFormField(
-                  controller: _numeraciontextController,
-                  decoration: InputDecoration(
-                      labelText: "Numeración", icon: Icon(Icons.credit_card)),
-                  validator: (value) {
-                    if (value.length > 0) {
-                      return null;
-                    } else {
-                      return "Debe introducir una numeración";
-                    }
+          content: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                //tipo documento
+                DropdownButton<String>(
+                  hint: Text(tiposel),
+                  items: tipo.map((dropdownstringitem) {
+                    return DropdownMenuItem<String>(
+                      child: Text(dropdownstringitem),
+                      value: dropdownstringitem,
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      tiposel = value;
+                    });
                   },
                 ),
-              ),
-              SizedBox(height: 20.0),
-              Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(40.0),
-                    color: Colors.grey),
-                width: size.width * 0.8,
-                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-                child: TextFormField(
-                  controller: _numeroteltextController,
-                  decoration: InputDecoration(
-                      labelText: "Número de Telefono",
-                      icon: Icon(Icons.phone_android)),
-                  validator: (value) {
-                    if (value.length > 0) {
-                      return null;
-                    } else {
-                      return "Debe introducir un número";
+                SizedBox(height: 20.0),
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(40.0),
+                      color: Colors.grey),
+                  width: size.width * 0.8,
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+                  child: TextFormField(
+                    controller: _numeraciontextController,
+                    decoration: InputDecoration(
+                        labelText: "Numeración", icon: Icon(Icons.credit_card)),
+                    validator: (value) {
+                      if (value.length > 0) {
+                        return null;
+                      } else {
+                        return "Debe introducir una numeración";
+                      }
+                    },
+                  ),
+                ),
+                SizedBox(height: 20.0),
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(40.0),
+                      color: Colors.grey),
+                  width: size.width * 0.8,
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+                  child: TextFormField(
+                    controller: _numeroteltextController,
+                    decoration: InputDecoration(
+                        labelText: "Número de Telefono",
+                        icon: Icon(Icons.phone_android)),
+                    validator: (value) {
+                      if (value.length > 0) {
+                        return null;
+                      } else {
+                        return "Debe introducir un número";
+                      }
+                    },
+                  ),
+                ),
+                SizedBox(height: 20.0),
+                RaisedButton(
+                  onPressed: () async {
+                    if (_formKey.currentState.validate()) {
+                      final email = _emailtextController.text;
+                      final password = _passwordtextController.text;
+                      bool flag = true;
+                      flag = await context
+                          .read<AdminstatesCubit>()
+                          .validateUsername(email);
+                      if (flag) {
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                            content: Text("Este usuario ya esta creado")));
+                      } else {
+                        final userEtity = UserEEntities(
+                            nombre: _nombretextController.text,
+                            apellido: _apellidotextController.text,
+                            correo: email,
+                            contrasena: password,
+                            codpais: codpais,
+                            pais: "un",
+                            codciudad: codprov,
+                            ciudad: "una",
+                            coddir: "1",
+                            direccion: _referenciatextController.text,
+                            tipo: tiposel,
+                            numeracion: _numeraciontextController.text,
+                            numerotelf: _numeroteltextController.text,
+                            codcli: '1');
+                        await context
+                            .bloc<AdminstatesCubit>()
+                            .createUser(userEtity);
+                        context
+                            .bloc<AdminstatesCubit>()
+                            .setUser(email, password);
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, '/menu', (_) => false);
+                      }
+                      _nombretextController.clear();
+                      _emailtextController.clear();
+                      _passwordtextController.clear();
+                      _referenciatextController.clear();
+                      _apellidotextController.clear();
+                      _numeraciontextController.clear();
+                      _numeroteltextController.clear();
                     }
                   },
-                ),
-              ),
-              SizedBox(height: 20.0),
-            ],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40.0),
+                  ),
+                  child: Text("Aceptar"),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 44.0, vertical: 14.0),
+                )
+              ],
+            ),
           )),
     ];
     return Stepper(
@@ -326,51 +384,7 @@ class SignupPageState extends State<SignupPage> {
                       } else {
                         setState(() => complete = true);
                       }
-                      if (_indexstep == 2) {
-                        if (_formKey.currentState.validate()) {
-                          final email = _emailtextController.text;
-                          final password = _passwordtextController.text;
-                          bool flag = true;
-                          flag = await context
-                              .read<AdminstatesCubit>()
-                              .validateUsername(email);
-                          if (flag) {
-                            Scaffold.of(context).showSnackBar(SnackBar(
-                                content: Text("Este usuario ya esta creado")));
-                          } else {
-                            final userEtity = UserEEntities(
-                                nombre: _nombretextController.text,
-                                apellido: _apellidotextController.text,
-                                correo: email,
-                                contrasena: password,
-                                codpais: codpais,
-                                pais: "un",
-                                codciudad: codprov,
-                                ciudad: "una",
-                                coddir: "1",
-                                direccion: _referenciatextController.text,
-                                tipo: tiposel,
-                                numeracion: _numeraciontextController.text,
-                                numerotelf: _numeroteltextController.text,
-                                codcli: null);
-                            await context
-                                .bloc<AdminstatesCubit>()
-                                .createUser(userEtity);
-                            context
-                                .bloc<AdminstatesCubit>()
-                                .setUser(email, password);
-                            Navigator.pushNamedAndRemoveUntil(
-                                context, '/menu', (_) => false);
-                          }
-                          _nombretextController.clear();
-                          _emailtextController.clear();
-                          _passwordtextController.clear();
-                          _referenciatextController.clear();
-                          _apellidotextController.clear();
-                          _numeraciontextController.clear();
-                          _numeroteltextController.clear();
-                        }
-                      }
+                      if (_indexstep == 2) {}
                     },
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(40.0),
