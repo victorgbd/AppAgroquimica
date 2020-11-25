@@ -27,144 +27,163 @@ class ListaState extends State<Lista> {
     return Container(
       child: Column(
         children: [
+          SizedBox(
+            height: 10.0,
+          ),
           Expanded(
-            child: ListView.builder(
-              itemCount: context.watch<AdminstatesCubit>().carrito.length,
-              itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    Dismissible(
-                      direction: DismissDirection.endToStart,
-                      background: Container(
-                        color: Colors.red,
-                        alignment: Alignment.centerRight,
-                        padding: EdgeInsets.all(15),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.cancel,
-                              color: Colors.white,
-                            )
-                          ],
-                        ),
-                      ),
-                      onDismissed: (direction) {
-                        if (direction == DismissDirection.endToStart) {
-                          //llamar un metodo para eliminarlo de la tabla wishlist
-                          setState(() {
-                            totalfact -= int.parse(context
-                                    .read<AdminstatesCubit>()
-                                    .carrito[index]
-                                    .cantidadven) *
-                                double.parse(context
-                                    .read<AdminstatesCubit>()
-                                    .carrito[index]
-                                    .precio);
-                            context.read<AdminstatesCubit>().totalfacturar =
-                                totalfact;
-                            context
-                                .read<AdminstatesCubit>()
-                                .carrito
-                                .removeAt(index);
-                          });
-                        }
-                      },
-                      key: UniqueKey(),
-                      child: ListTile(
-                        title: Text(context
-                            .watch<AdminstatesCubit>()
-                            .carrito[index]
-                            .descripcion),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(context
-                                .watch<AdminstatesCubit>()
-                                .carrito[index]
-                                .cantidadven),
-                            Text("Precio: " +
-                                context
-                                    .watch<AdminstatesCubit>()
-                                    .carrito[index]
-                                    .precio),
-                          ],
-                        ),
-                        onTap: () {
-                          int cantidad = int.parse(context
-                              .read<AdminstatesCubit>()
-                              .carrito[index]
-                              .cantidadven);
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return StatefulBuilder(
-                                builder: (context, setState) {
-                                  return AlertDialog(
-                                      content: SingleChildScrollView(
-                                        child: Column(
-                                          children: [
-                                            FadeInImage(
-                                                height: 256.0,
-                                                width: 256.0,
-                                                placeholder: AssetImage(
-                                                    'assets/plant_icon.png'),
-                                                image: NetworkImage(context
-                                                    .watch<AdminstatesCubit>()
-                                                    .carrito[index]
-                                                    .url)),
-                                            Text(context
-                                                .watch<AdminstatesCubit>()
-                                                .carrito[index]
-                                                .descripcion),
-                                            Text("Precio: " +
-                                                context
-                                                    .watch<AdminstatesCubit>()
-                                                    .carrito[index]
-                                                    .precio),
-                                            Counter(
-                                                initialValue: cantidad,
-                                                minValue: 1,
-                                                step: 1,
-                                                maxValue: int.parse(context
-                                                    .watch<AdminstatesCubit>()
-                                                    .carrito[index]
-                                                    .cantidad),
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    cantidad = value;
-                                                  });
-                                                },
-                                                decimalPlaces: 0)
-                                          ],
-                                        ),
-                                      ),
-                                      actions: [
-                                        FlatButton(
-                                            onPressed: () {
-                                              context
-                                                  .read<AdminstatesCubit>()
-                                                  .setcantven(index, cantidad);
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: Text("OK")),
-                                        FlatButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: Text("CANCELAR"))
-                                      ]);
-                                },
-                              );
-                            },
-                          );
-                        },
-                      ),
+            child: Container(
+              width: 470.0,
+              height: 620.0,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.8),
+                      spreadRadius: 3,
+                      blurRadius: 7,
+                      offset: Offset(0, 3),
                     ),
-                    Divider(),
-                  ],
-                );
-              },
+                  ]),
+              child: ListView.builder(
+                itemCount: context.watch<AdminstatesCubit>().carrito.length,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      Dismissible(
+                        direction: DismissDirection.endToStart,
+                        background: Container(
+                          color: Colors.red,
+                          alignment: Alignment.centerRight,
+                          padding: EdgeInsets.all(15),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.cancel,
+                                color: Colors.white,
+                              )
+                            ],
+                          ),
+                        ),
+                        onDismissed: (direction) {
+                          if (direction == DismissDirection.endToStart) {
+                            //llamar un metodo para eliminarlo de la tabla wishlist
+                            setState(() {
+                              totalfact -= int.parse(context
+                                      .read<AdminstatesCubit>()
+                                      .carrito[index]
+                                      .cantidadven) *
+                                  double.parse(context
+                                      .read<AdminstatesCubit>()
+                                      .carrito[index]
+                                      .precio);
+                              context.read<AdminstatesCubit>().totalfacturar =
+                                  totalfact;
+                              context
+                                  .read<AdminstatesCubit>()
+                                  .carrito
+                                  .removeAt(index);
+                            });
+                          }
+                        },
+                        key: UniqueKey(),
+                        child: ListTile(
+                          title: Text(context
+                              .watch<AdminstatesCubit>()
+                              .carrito[index]
+                              .descripcion),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(context
+                                  .watch<AdminstatesCubit>()
+                                  .carrito[index]
+                                  .cantidadven),
+                              Text("Precio: " +
+                                  context
+                                      .watch<AdminstatesCubit>()
+                                      .carrito[index]
+                                      .precio),
+                            ],
+                          ),
+                          onTap: () {
+                            int cantidad = int.parse(context
+                                .read<AdminstatesCubit>()
+                                .carrito[index]
+                                .cantidadven);
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return StatefulBuilder(
+                                  builder: (context, setState) {
+                                    return AlertDialog(
+                                        content: SingleChildScrollView(
+                                          child: Column(
+                                            children: [
+                                              FadeInImage(
+                                                  height: 256.0,
+                                                  width: 256.0,
+                                                  placeholder: AssetImage(
+                                                      'assets/plant_icon.png'),
+                                                  image: NetworkImage(context
+                                                      .watch<AdminstatesCubit>()
+                                                      .carrito[index]
+                                                      .url)),
+                                              Text(context
+                                                  .watch<AdminstatesCubit>()
+                                                  .carrito[index]
+                                                  .descripcion),
+                                              Text("Precio: " +
+                                                  context
+                                                      .watch<AdminstatesCubit>()
+                                                      .carrito[index]
+                                                      .precio),
+                                              Counter(
+                                                  initialValue: cantidad,
+                                                  minValue: 1,
+                                                  step: 1,
+                                                  maxValue: int.parse(context
+                                                      .watch<AdminstatesCubit>()
+                                                      .carrito[index]
+                                                      .cantidad),
+                                                  onChanged: (value) {
+                                                    setState(() {
+                                                      cantidad = value;
+                                                    });
+                                                  },
+                                                  decimalPlaces: 0)
+                                            ],
+                                          ),
+                                        ),
+                                        actions: [
+                                          FlatButton(
+                                              onPressed: () {
+                                                context
+                                                    .read<AdminstatesCubit>()
+                                                    .setcantven(
+                                                        index, cantidad);
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: Text("OK")),
+                                          FlatButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: Text("CANCELAR"))
+                                        ]);
+                                  },
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                      Divider(),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
           SizedBox(

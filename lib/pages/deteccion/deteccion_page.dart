@@ -1,5 +1,8 @@
 import 'package:agroquimica/cubit/adminstates_cubit.dart';
+import 'package:agroquimica/data/entities/productos_entities.dart';
+import 'package:agroquimica/pages/ventas/ventas_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_counter/flutter_counter.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +15,10 @@ class DeteccionPage extends StatefulWidget {
 }
 
 class DeteccionPageState extends State<DeteccionPage> {
+  List<ProductosEntities> recomendacion = [];
+  String codplanta;
+  String codespecie;
+  String codenfermedad;
   File _file;
   final picker = ImagePicker();
   Future getImageFromGallery() async {
@@ -87,6 +94,23 @@ class DeteccionPageState extends State<DeteccionPage> {
     });
   }
 
+  void dialog(String message) {
+    showDialog(
+        context: context,
+        builder: (dialogcontext) {
+          return AlertDialog(
+            content: Text(message),
+            actions: [
+              FlatButton(
+                  onPressed: () {
+                    Navigator.of(dialogcontext).pop();
+                  },
+                  child: Text("OK"))
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Step> steps = [
@@ -146,8 +170,92 @@ class DeteccionPageState extends State<DeteccionPage> {
             child: Column(
               children: [
                 RaisedButton(
-                  onPressed: () {
-                    context.read<AdminstatesCubit>().getResult(_file);
+                  onPressed: () async {
+                    if (_file == null) {
+                      dialog("Imagen no seleccionada");
+                    } else {
+                      var resultados = await context
+                          .read<AdminstatesCubit>()
+                          .getResult(_file);
+                      showDialog(
+                          context: context,
+                          builder: (dialogcontext) {
+                            return AlertDialog(
+                              scrollable: true,
+                              content: Column(
+                                children: [
+                                  Text("Seleccione una predicción"),
+                                  Container(
+                                    width: 300.0,
+                                    height: 200.0,
+                                    child: ListView.builder(
+                                      itemCount: resultados.length,
+                                      itemBuilder: (context, index) {
+                                        return ListTile(
+                                          title: Text(resultados[index].planta),
+                                          subtitle: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(resultados[index].especie),
+                                              Text(
+                                                  resultados[index].enfermedad),
+                                            ],
+                                          ),
+                                          onTap: () {
+                                            Navigator.of(dialogcontext).pop();
+                                            showDialog(
+                                                context: context,
+                                                builder: (dialogcontext2) {
+                                                  return AlertDialog(
+                                                    content:
+                                                        Text("Esta Seguro?"),
+                                                    actions: [
+                                                      FlatButton(
+                                                          onPressed: () async {
+                                                            codplanta =
+                                                                resultados[
+                                                                        index]
+                                                                    .codplanta;
+                                                            codespecie =
+                                                                resultados[
+                                                                        index]
+                                                                    .codespecie;
+                                                            codenfermedad =
+                                                                resultados[
+                                                                        index]
+                                                                    .codenfer;
+                                                            Navigator.of(
+                                                                    dialogcontext2)
+                                                                .pop();
+                                                          },
+                                                          child: Text("OK")),
+                                                      FlatButton(
+                                                          onPressed: () {},
+                                                          child: Text("ATRAS"))
+                                                    ],
+                                                  );
+                                                });
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  )
+                                ],
+                              ),
+                              actions: [
+                                FlatButton(
+                                    onPressed: () {
+                                      Navigator.of(dialogcontext).pop();
+                                    },
+                                    child: Text("CANCELAR"))
+                              ],
+                            );
+                          });
+                      setState(() {
+                        recomendacion.clear();
+                      });
+                    }
                   },
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(40.0),
@@ -159,6 +267,159 @@ class DeteccionPageState extends State<DeteccionPage> {
               ],
             ),
           )),
+      Step(
+        title: Text(""),
+        content: Column(
+          children: [
+            Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.8),
+                        spreadRadius: 3,
+                        blurRadius: 7,
+                        offset: Offset(0, 3),
+                      ),
+                    ]),
+                height: 400.0,
+                width: 400,
+                //agregar los datos
+                child: ListView.builder(
+                  itemCount: this.recomendacion.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        Dismissible(
+                          direction: DismissDirection.endToStart,
+                          background: Container(
+                            color: Colors.red,
+                            alignment: Alignment.centerRight,
+                            padding: EdgeInsets.all(15),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.cancel,
+                                  color: Colors.white,
+                                )
+                              ],
+                            ),
+                          ),
+                          key: UniqueKey(),
+                          onDismissed: (direction) {
+                            if (direction == DismissDirection.endToStart) {
+                              setState(() {
+                                recomendacion.removeAt(index);
+                              });
+                            }
+                          },
+                          child: ListTile(
+                            title: Text(recomendacion[index].descripcion),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(recomendacion[index].cantidadven == null
+                                    ? recomendacion[index].cantidadven = "1"
+                                    : recomendacion[index].cantidadven),
+                                Text("Precio: " + recomendacion[index].precio),
+                              ],
+                            ),
+                            onTap: () {
+                              int cantidad =
+                                  int.parse(recomendacion[index].cantidadven);
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                      content: SingleChildScrollView(
+                                        child: Column(
+                                          children: [
+                                            FadeInImage(
+                                                height: 256.0,
+                                                width: 256.0,
+                                                placeholder: AssetImage(
+                                                    'assets/plant_icon.png'),
+                                                image: NetworkImage(
+                                                    recomendacion[index].url)),
+                                            Text(recomendacion[index]
+                                                .descripcion),
+                                            Text("Precio: " +
+                                                recomendacion[index].precio),
+                                            StatefulBuilder(
+                                              builder: (context, setState) {
+                                                return Counter(
+                                                    initialValue: cantidad,
+                                                    minValue: 1,
+                                                    step: 1,
+                                                    maxValue: int.parse(
+                                                        recomendacion[index]
+                                                            .cantidad),
+                                                    onChanged: (value) {
+                                                      setState(() {
+                                                        cantidad = value;
+                                                      });
+                                                    },
+                                                    decimalPlaces: 0);
+                                              },
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      actions: [
+                                        FlatButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                recomendacion[index]
+                                                        .cantidadven =
+                                                    cantidad.toString();
+                                                context
+                                                    .read<AdminstatesCubit>()
+                                                    .setcantvendetc();
+                                              });
+
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text("OK")),
+                                        FlatButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text("CANCELAR"))
+                                      ]);
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                        Divider()
+                      ],
+                    );
+                  },
+                )),
+            SizedBox(
+              height: 10.0,
+            ),
+            RaisedButton(
+              onPressed: () async {
+                if (recomendacion.isEmpty) {
+                  dialog("Lista de productos vacia");
+                } else {
+                  context.read<AdminstatesCubit>().addcarritodet(recomendacion);
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => VentasPage()));
+                }
+              },
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(40.0),
+              ),
+              child: Text("Agregar al carrito"),
+              padding: EdgeInsets.symmetric(horizontal: 44.0, vertical: 14.0),
+            ),
+          ],
+        ),
+      ),
     ];
     return Scaffold(
       endDrawer: UserDrawer(),
@@ -177,14 +438,6 @@ class DeteccionPageState extends State<DeteccionPage> {
             return Center(
               child: CircularProgressIndicator(),
             );
-          } else if (state is ImageStateLoaded) {
-            return Text(state.imageEntities[0].planta +
-                " " +
-                state.imageEntities[0].especie +
-                " " +
-                state.imageEntities[0].enfermedad +
-                " " +
-                state.imageEntities[0].porc);
           } else {
             return Stepper(
               type: StepperType.horizontal,
@@ -197,19 +450,35 @@ class DeteccionPageState extends State<DeteccionPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Container(
-                      child: RaisedButton(
-                        onPressed: () {
-                          _indexstep + 1 != steps.length
-                              ? goTo(_indexstep + 1)
-                              : setState(() => complete = true);
-                        },
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(40.0),
-                        ),
-                        child: Text("Siguiente"),
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 44.0, vertical: 14.0),
-                      ),
+                      child: _indexstep != 2
+                          ? RaisedButton(
+                              onPressed: () async {
+                                _indexstep + 1 != steps.length
+                                    ? goTo(_indexstep + 1)
+                                    : setState(() => complete = true);
+                                if (_indexstep == 2) {
+                                  List<ProductosEntities> aux = await context
+                                      .read<AdminstatesCubit>()
+                                      .getRecomendacion(
+                                          '?codplanta=$codplanta&codespecie=$codespecie&codenfermedad=$codenfermedad');
+                                  if (aux.isNotEmpty) {
+                                    setState(() {
+                                      recomendacion = aux;
+                                    });
+                                  } else {
+                                    dialog(
+                                        "Recomendación de productos no se encontró");
+                                  }
+                                }
+                              },
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(40.0),
+                              ),
+                              child: Text("Siguiente"),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 44.0, vertical: 14.0),
+                            )
+                          : null,
                     ),
                     Container(
                       child: RaisedButton(

@@ -123,15 +123,37 @@ class RecomendacionPageState extends State<RecomendacionPage> {
                         ),
                         RaisedButton(
                           onPressed: () async {
+                            setState(() {
+                              recomendacion.clear();
+                            });
+
                             final aux = await context
                                 .read<AdminstatesCubit>()
                                 .getRecomendacion(
                                     '?codplanta=$codplanta&codespecie=$codespecie&codenfermedad=$codenfermedad');
-                            setState(() {
-                              recomendacion = aux;
-                            });
+                            if (aux.isNotEmpty) {
+                              setState(() {
+                                recomendacion = aux;
+                              });
+                            } else {
+                              showDialog(
+                                  context: context,
+                                  builder: (dialogcontext) {
+                                    return AlertDialog(
+                                      content: Text(
+                                          "Recomendación de productos no se encontró"),
+                                      actions: [
+                                        FlatButton(
+                                            onPressed: () {
+                                              Navigator.of(dialogcontext).pop();
+                                            },
+                                            child: Text("OK"))
+                                      ],
+                                    );
+                                  });
+                            }
                           },
-                          child: Text('Buscar'),
+                          child: Text('Buscar recomendación'),
                           padding: EdgeInsets.symmetric(
                               horizontal: 54.0, vertical: 24.0),
                           shape: RoundedRectangleBorder(
@@ -298,11 +320,28 @@ class RecomendacionPageState extends State<RecomendacionPage> {
                         ),
                         RaisedButton(
                           onPressed: () async {
-                            context
-                                .read<AdminstatesCubit>()
-                                .addcarritorec(plantas, recomendacion);
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => VentasPage()));
+                            if (recomendacion.isEmpty) {
+                              showDialog(
+                                  context: context,
+                                  builder: (dialogcontext) {
+                                    return AlertDialog(
+                                      content: Text("Lista de productos vacia"),
+                                      actions: [
+                                        FlatButton(
+                                            onPressed: () {
+                                              Navigator.of(dialogcontext).pop();
+                                            },
+                                            child: Text("OK"))
+                                      ],
+                                    );
+                                  });
+                            } else {
+                              context
+                                  .read<AdminstatesCubit>()
+                                  .addcarritorec(plantas, recomendacion);
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => VentasPage()));
+                            }
                           },
                           child: Text('Agregar al carrito'),
                           padding: EdgeInsets.symmetric(

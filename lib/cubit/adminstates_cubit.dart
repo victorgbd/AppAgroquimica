@@ -175,18 +175,22 @@ class AdminstatesCubit extends Cubit<AdminstatesState> {
     );
   }
 
-  Future<void> getResult(File image) async {
-    emit(ImageStateLoading());
+  Future<List<ImageEntities>> getResult(File image) async {
+    // emit(ImageStateLoading());
     final failOrsucess =
         await this.facturaAdminRepository.getImageResult(image);
-    failOrsucess.fold(
+    List<ImageEntities> list = [];
+    list = failOrsucess.fold(
       (failure) {
         emit(AdminstatesError(message: failure.message));
+        return list;
       },
-      (imageEntities) {
-        emit(ImageStateLoaded(imageEntities));
+      (direccion) {
+        list = direccion;
+        return list;
       },
     );
+    return list;
   }
 
   Future<void> getRecomendacionInit(String query) async {
@@ -225,6 +229,10 @@ class AdminstatesCubit extends Cubit<AdminstatesState> {
     emit(AdminstateloadedRecomendacion(recomendacionesEntites: recomendacion));
   }
 
+  void setcantvendetc() {
+    emit(AdminstateloadedRecomendacion());
+  }
+
   void addcarritorec(List<RecomendacionesEntities> recomendacion,
       List<ProductosEntities> producto) {
     var flag = true;
@@ -240,5 +248,20 @@ class AdminstatesCubit extends Cubit<AdminstatesState> {
       }
     });
     emit(AdminstateloadedRecomendacion(recomendacionesEntites: recomendacion));
+  }
+
+  void addcarritodet(List<ProductosEntities> producto) {
+    var flag = true;
+    producto.forEach((elementi) {
+      flag = true;
+      carrito.forEach((elementj) {
+        if (elementj.codproducto == elementi.codproducto) {
+          flag = false;
+        }
+      });
+      if (flag) {
+        carrito.add(elementi);
+      }
+    });
   }
 }

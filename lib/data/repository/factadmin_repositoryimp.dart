@@ -332,11 +332,7 @@ class FacturaAdminRepositoryimp implements IFacturaAdminRepository {
       } else {
         listrecom = recomendacionesModelFromJson(response.body);
       }
-      if (listrecom.isNotEmpty) {
-        return Right(listrecom);
-      } else {
-        return Left(const FactAdminFailure(message: "recomendacion vacia"));
-      }
+      return Right(listrecom);
     } catch (e) {
       return Left(
           const FactAdminFailure(message: "something was wrong in getdata"));
