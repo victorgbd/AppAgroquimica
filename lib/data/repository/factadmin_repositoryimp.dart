@@ -1,35 +1,11 @@
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:agroquimica/data/models/recomendacion/recomendacion_model.dart';
-import 'package:path/path.dart';
-import 'package:agroquimica/data/entities/detallefact_entities.dart';
-import 'package:agroquimica/data/entities/direccion/direccion_entities.dart';
-import 'package:agroquimica/data/entities/image_entities.dart';
-import 'package:agroquimica/data/entities/productos_entities.dart';
-import 'package:agroquimica/data/entities/user_entities.dart';
-import 'package:agroquimica/data/entities/usere_entities.dart';
-import 'package:agroquimica/data/models/detallefact_model.dart';
-import 'package:agroquimica/data/models/direccion/direccion_model.dart';
-import 'package:agroquimica/data/models/imagesres_model.dart';
-import 'package:agroquimica/data/models/produtos_model.dart';
-import 'package:agroquimica/data/models/user_model.dart';
-import 'package:agroquimica/data/models/usere_model.dart';
-import 'package:dartz/dartz.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-
-import 'package:agroquimica/data/entities/factura_entities.dart';
-import 'package:agroquimica/data/models/factura_model.dart';
-import 'package:agroquimica/data/repository/factadmin_repository.dart';
-import 'package:http/http.dart';
+part of 'factadmin_repository.dart';
 
 class FacturaAdminRepositoryimp implements IFacturaAdminRepository {
   final http.Client httpClient;
   FacturaAdminRepositoryimp({
     @required this.httpClient,
   });
-  final _url = "https://d33dc78dcc90.ngrok.io";
+  final _url = "https://f823f270d30e.ngrok.io";
 
   // @override
   // Future<Either<Failure, FacturaEntities>> getFactura() {
@@ -64,58 +40,18 @@ class FacturaAdminRepositoryimp implements IFacturaAdminRepository {
   }
 
   @override
-  Future<Either<Failure, UserEntities>> getUser(
-      String user, String password) async {
-    try {
-      final body = UserModel(
-          codusuario: '1',
-          contrasena: password,
-          nickname: user,
-          tipoacceso: '0');
-      final response = await this.httpClient.post(
-            _url + "/user",
-            body: userModelToJson([body]),
-          );
-
-      if (response.statusCode != 200) {
-        return Left(
-            const FactAdminFailure(message: "something was wrong in getdata"));
-      }
-
-      final listUser = userModelFromJson(response.body);
-      if (listUser.isNotEmpty) {
-        return Right(listUser[0]);
-      } else {
-        return Left(const FactAdminFailure(message: "usuario vacio"));
-      }
-    } catch (e) {
-      return Left(
-          const FactAdminFailure(message: "something was wrong in getdata"));
-    }
-  }
-
-  @override
   Future<Either<Failure, bool>> validateUser(
       String user, String password) async {
     try {
-      final body = UserModel(
-          codusuario: '1',
-          contrasena: password,
-          nickname: user,
-          tipoacceso: '0');
-      final response = await this.httpClient.put(
-            _url + "/user",
-            body: userModelToJson([body]),
+      final response = await this.httpClient.get(
+            _url + "/user?nickname=" + user + "&contrasena=" + password,
           );
-
       if (response.statusCode != 200) {
         return Left(
             const FactAdminFailure(message: "something was wrong in getdata"));
       }
-
-      final listUser = userModelFromJson(response.body);
-
-      return Right(listUser.isNotEmpty);
+      final flag = userflagmodelFromJson(response.body);
+      return Right(flag.flag);
     } catch (e) {
       return Left(
           const FactAdminFailure(message: "something was wrong in getdata"));
@@ -139,7 +75,7 @@ class FacturaAdminRepositoryimp implements IFacturaAdminRepository {
           numerotelf: usuario.numerotelf,
           codciudad: usuario.codciudad,
           codpais: usuario.codpais,
-          codcli: null);
+          codcli: usuario.codcli);
       final response = await this
           .httpClient
           .post(_url + "/user", body: userEModelToJson([userModel]));
@@ -158,32 +94,19 @@ class FacturaAdminRepositoryimp implements IFacturaAdminRepository {
   @override
   Future<Either<Failure, bool>> validateUsername(String user) async {
     try {
-      final body = UserModel(
-          codusuario: '2', contrasena: '1', nickname: user, tipoacceso: '0');
-      final response = await this.httpClient.put(
-            _url + "/user",
-            body: userModelToJson([body]),
-          );
+      final response =
+          await this.httpClient.get(_url + "/user?nickname=" + user);
 
       if (response.statusCode != 200) {
         return Left(
             const FactAdminFailure(message: "something was wrong in getdata"));
       }
-
-      final listUser = userModelFromJson(response.body);
-
-      return Right(listUser.isNotEmpty);
+      final flag = userflagmodelFromJson(response.body);
+      return Right(flag.flag);
     } catch (e) {
       return Left(
           const FactAdminFailure(message: "something was wrong in getdata"));
     }
-  }
-
-  @override
-  Future<Either<Failure, List<UserEntities>>> getUsers(
-      String user, String password) {
-    // TODO: implement getUsers
-    throw UnimplementedError();
   }
 
   @override
@@ -294,7 +217,7 @@ class FacturaAdminRepositoryimp implements IFacturaAdminRepository {
 
       final uri = Uri.parse(_url + "/upload");
 
-      var request = MultipartRequest("POST", uri);
+      var request = http.MultipartRequest("POST", uri);
 
       final multipartFile = http.MultipartFile(
         'file',
@@ -305,7 +228,7 @@ class FacturaAdminRepositoryimp implements IFacturaAdminRepository {
 
       request.files.add(multipartFile);
 
-      StreamedResponse response = await request.send();
+      http.StreamedResponse response = await request.send();
       if (response.statusCode != 200)
         return Left(const FactAdminFailure(message: "Conexion Fallida"));
 

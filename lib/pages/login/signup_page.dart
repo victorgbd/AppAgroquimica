@@ -318,24 +318,24 @@ class SignupPageState extends State<SignupPage> {
                         Scaffold.of(context).showSnackBar(SnackBar(
                             content: Text("Este usuario ya esta creado")));
                       } else {
-                        final userEtity = UserEEntities(
+                        final userEntity = UserEEntities(
                             nombre: _nombretextController.text,
                             apellido: _apellidotextController.text,
                             correo: email,
                             contrasena: password,
                             codpais: codpais,
-                            pais: "un",
+                            pais: "",
                             codciudad: codprov,
-                            ciudad: "una",
+                            ciudad: "",
                             coddir: "1",
                             direccion: _referenciatextController.text,
                             tipo: tiposel,
                             numeracion: _numeraciontextController.text,
                             numerotelf: _numeroteltextController.text,
-                            codcli: '1');
+                            codcli: "1");
                         await context
                             .read<AdminstatesCubit>()
-                            .createUser(userEtity);
+                            .createUser(userEntity);
                         context
                             .read<AdminstatesCubit>()
                             .setUser(email, password);

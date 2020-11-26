@@ -1,6 +1,5 @@
 import 'package:agroquimica/data/entities/usere_entities.dart';
 import 'package:agroquimica/data/repository/factadmin_repository.dart';
-import 'package:agroquimica/data/repository/factadmin_repositoryimp.dart';
 
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;

@@ -22,13 +22,6 @@ class AdminstatesLoadFact extends AdminstatesState {
 
 class AdminstatesCreatingUser extends AdminstatesState {}
 
-class AdminstatesLoadUser extends AdminstatesState {
-  final UserEntities userEntities;
-  AdminstatesLoadUser({
-    this.userEntities,
-  });
-}
-
 class AdminstatesError extends AdminstatesState {
   final String message;
   AdminstatesError({
