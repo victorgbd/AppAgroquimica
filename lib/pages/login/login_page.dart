@@ -1,4 +1,5 @@
 import 'package:agroquimica/cubit/adminstates_cubit.dart';
+import 'package:agroquimica/pages/login/verificacion_email.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -112,13 +113,21 @@ class LoginPageState extends State<LoginPage> {
                                     email: user, password: password))
                             .user;
                         if (fuser != null) {
-                          await context
-                              .read<AdminstatesCubit>()
-                              .setUser(user, password);
-                          Navigator.pushNamedAndRemoveUntil(
-                              context, '/menu', (_) => false);
-                          _usertextController.clear();
-                          _passwordtextController.clear();
+                          if (fuser.emailVerified) {
+                            await context
+                                .read<AdminstatesCubit>()
+                                .setUser(user, password);
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, '/menu', (_) => false);
+                            _usertextController.clear();
+                            _passwordtextController.clear();
+                          } else {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => VerificacionPage(
+                                      email: user,
+                                      password: password,
+                                    )));
+                          }
                         }
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'user-not-found') {

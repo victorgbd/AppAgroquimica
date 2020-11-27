@@ -5,12 +5,7 @@ class FacturaAdminRepositoryimp implements IFacturaAdminRepository {
   FacturaAdminRepositoryimp({
     @required this.httpClient,
   });
-  final _url = "https://3542a0551334.ngrok.io";
-
-  // @override
-  // Future<Either<Failure, FacturaEntities>> getFactura() {
-  //
-  // }
+  final _url = "https://982d17351a21.ngrok.io";
 
   @override
   Future<Either<Failure, int>> createFactura(FacturaEntities factura) async {

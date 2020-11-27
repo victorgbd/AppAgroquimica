@@ -1,6 +1,9 @@
 import 'package:agroquimica/cubit/adminstates_cubit.dart';
 import 'package:agroquimica/data/entities/detallefact_entities.dart';
 import 'package:agroquimica/data/entities/factura_entities.dart';
+
+import 'package:flare_flutter/flare_actor.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_counter/flutter_counter.dart';
@@ -15,6 +18,17 @@ class Lista extends StatefulWidget {
 }
 
 class ListaState extends State<Lista> {
+  FlareActor _actor;
+  @override
+  void initState() {
+    _actor = FlareActor(
+      "assets/Success_Check.flr",
+      alignment: Alignment.center,
+      animation: 'Untitled',
+    );
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     double totalfact;
@@ -315,13 +329,16 @@ class ListaState extends State<Lista> {
     showDialog(
         context: context,
         child: AlertDialog(
-          content: SingleChildScrollView(
+          scrollable: true,
+          content: Container(
+            width: 300.0,
+            height: 300.0,
             child: Column(
               children: [
-                Image(
-                  height: 256.0,
+                Container(
                   width: 256.0,
-                  image: AssetImage('assets/check_animation.gif'),
+                  height: 256.0,
+                  child: _actor,
                 ),
                 SizedBox(
                   height: 20.0,
