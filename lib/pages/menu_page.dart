@@ -31,7 +31,7 @@ class MenuPage extends StatelessWidget {
                   height: double.infinity,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Colors.orange[400],
                       borderRadius: BorderRadius.circular(10.0),
                       boxShadow: [
                         BoxShadow(
@@ -44,13 +44,16 @@ class MenuPage extends StatelessWidget {
                   child: Column(
                     children: [
                       Image(
-                        image: AssetImage('assets/plant_icon.png'),
+                        image: AssetImage('assets/products.png'),
                         height: 128.0,
                         width: 128.0,
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text('VENTAS'),
+                        child: Text('VENTAS',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold)),
                       ),
                     ],
                   ),
@@ -66,7 +69,7 @@ class MenuPage extends StatelessWidget {
                   height: double.infinity,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Colors.orange[400],
                       borderRadius: BorderRadius.circular(10.0),
                       boxShadow: [
                         BoxShadow(
@@ -79,13 +82,17 @@ class MenuPage extends StatelessWidget {
                   child: Column(
                     children: [
                       Image(
-                        image: AssetImage('assets/plant_icon.png'),
+                        image: AssetImage('assets/detection.png'),
                         height: 128.0,
                         width: 128.0,
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text('     DETECCIÓN \nDE ENFERMEDAD'),
+                        child: Text(
+                          '     DETECCIÓN \nDE ENFERMEDAD',
+                          style: TextStyle(
+                              color: Colors.black, fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ],
                   ),
@@ -101,7 +108,7 @@ class MenuPage extends StatelessWidget {
                   height: double.infinity,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Colors.orange[400],
                       borderRadius: BorderRadius.circular(10.0),
                       boxShadow: [
                         BoxShadow(
@@ -114,13 +121,16 @@ class MenuPage extends StatelessWidget {
                   child: Column(
                     children: [
                       Image(
-                        image: AssetImage('assets/plant_icon.png'),
+                        image: AssetImage('assets/recomend.png'),
                         height: 128.0,
                         width: 128.0,
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text('RECOMENDACIÓN DE\n        PRODUCTOS'),
+                        child: Text('RECOMENDACIÓN DE\n        PRODUCTOS',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold)),
                       ),
                     ],
                   ),
@@ -208,7 +218,8 @@ class UserDrawer extends StatelessWidget {
                     direccion: null,
                     tipo: null,
                     numeracion: null,
-                    numerotelf: null);
+                    numerotelf: null,
+                    codusu: null);
                 Navigator.pushNamedAndRemoveUntil(
                     context, "/welcome", (_) => false);
               }),

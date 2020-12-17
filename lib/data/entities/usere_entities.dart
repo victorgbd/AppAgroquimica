@@ -16,6 +16,7 @@ class UserEEntities {
     @required this.tipo,
     @required this.numeracion,
     @required this.numerotelf,
+    @required this.codusu,
   });
 
   final String nombre;
@@ -32,4 +33,5 @@ class UserEEntities {
   final String tipo;
   final String numeracion;
   final String numerotelf;
+  final String codusu;
 }

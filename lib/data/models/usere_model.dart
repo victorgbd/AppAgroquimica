@@ -28,6 +28,7 @@ class UserEModel extends UserEEntities {
     @required this.tipo,
     @required this.numeracion,
     @required this.numerotelf,
+    @required this.codusu,
   });
 
   final String nombre;
@@ -44,6 +45,7 @@ class UserEModel extends UserEEntities {
   final String tipo;
   final String numeracion;
   final String numerotelf;
+  final String codusu;
 
   factory UserEModel.fromJson(Map<String, dynamic> json) => UserEModel(
         nombre: json["nombre"],
@@ -60,6 +62,7 @@ class UserEModel extends UserEEntities {
         tipo: json["tipo"],
         numeracion: json["numeracion"],
         numerotelf: json["numerotelf"],
+        codusu: json["codusu"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -77,5 +80,6 @@ class UserEModel extends UserEEntities {
         "tipo": tipo,
         "numeracion": numeracion,
         "numerotelf": numerotelf,
+        "codusu": codusu,
       };
 }

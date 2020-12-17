@@ -33,6 +33,8 @@ dependencies:
   firebase_auth: ^0.18.3
   firebase_core: ^0.5.2
   flare_flutter: ^2.0.6
+  # imei_plugin: ^1.2.0
+  device_info: ^1.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

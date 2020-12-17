@@ -153,6 +153,7 @@ class SignupPageState extends State<SignupPage> {
                   padding:
                       EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
                   child: TextFormField(
+                    obscureText: true,
                     controller: _passwordtextController,
                     decoration: InputDecoration(
                         labelText: "Password", icon: Icon(Icons.lock)),
@@ -334,7 +335,8 @@ class SignupPageState extends State<SignupPage> {
                             tipo: tiposel,
                             numeracion: _numeraciontextController.text,
                             numerotelf: _numeroteltextController.text,
-                            codcli: "1");
+                            codcli: "1",
+                            codusu: "1");
                         await context
                             .read<AdminstatesCubit>()
                             .createUser(userEntity);

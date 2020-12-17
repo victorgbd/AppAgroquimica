@@ -26,7 +26,8 @@ Future<void> init() async {
             direccion: null,
             tipo: null,
             numeracion: null,
-            numerotelf: null),
+            numerotelf: null,
+            codusu: null),
       ));
 
   sl.registerLazySingleton<IFacturaAdminRepository>(

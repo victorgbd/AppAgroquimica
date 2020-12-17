@@ -5,7 +5,7 @@ class FacturaAdminRepositoryimp implements IFacturaAdminRepository {
   FacturaAdminRepositoryimp({
     @required this.httpClient,
   });
-  final _url = "https://375bc1eeee7f.ngrok.io";
+  final _url = "https://2bfac4443332.ngrok.io";
 
   @override
   Future<Either<Failure, int>> createFactura(FacturaEntities factura) async {
@@ -70,7 +70,8 @@ class FacturaAdminRepositoryimp implements IFacturaAdminRepository {
           numerotelf: usuario.numerotelf,
           codciudad: usuario.codciudad,
           codpais: usuario.codpais,
-          codcli: usuario.codcli);
+          codcli: usuario.codcli,
+          codusu: usuario.codusu);
       final response = await this
           .httpClient
           .post(_url + "/user", body: userEModelToJson([userModel]));

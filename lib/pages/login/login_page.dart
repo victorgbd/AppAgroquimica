@@ -86,6 +86,7 @@ class LoginPageState extends State<LoginPage> {
                   padding:
                       EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
                   child: TextFormField(
+                    obscureText: true,
                     controller: _passwordtextController,
                     decoration: InputDecoration(
                         labelText: "Password", icon: Icon(Icons.lock)),
@@ -117,6 +118,10 @@ class LoginPageState extends State<LoginPage> {
                             await context
                                 .read<AdminstatesCubit>()
                                 .setUser(user, password);
+                            print(context
+                                .read<AdminstatesCubit>()
+                                .userEEntities
+                                .codusu);
                             Navigator.pushNamedAndRemoveUntil(
                                 context, '/menu', (_) => false);
                             _usertextController.clear();
