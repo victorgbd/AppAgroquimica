@@ -30,8 +30,8 @@ dependencies:
   get_it: ^5.0.0
   flutter_counter: ^1.0.3
   image_picker: ^0.6.7+14
-  firebase_auth: ^0.18.3
-  firebase_core: ^0.5.2
+  firebase_auth: ^0.20.1
+  firebase_core: ^0.7.0
   flare_flutter: ^2.0.6
   # imei_plugin: ^1.2.0
   device_info: ^1.0.0

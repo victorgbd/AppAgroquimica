@@ -247,56 +247,58 @@ class ListaState extends State<Lista> {
                 onPressed: () {
                   showDialog(
                       context: context,
-                      child: AlertDialog(
-                        content: Text("¿Estas seguro que quieres continuar?"),
-                        actions: [
-                          FlatButton(
-                              onPressed: () async {
-                                final factura = FacturaEntities(
-                                    numfact: 1,
-                                    codcli: int.parse(context
-                                        .read<AdminstatesCubit>()
-                                        .userEEntities
-                                        .codcli),
-                                    estado: 0,
-                                    tipfac: "true",
-                                    fecha: null,
-                                    codemp: 13,
-                                    balance: 0.0,
-                                    total: context
-                                        .read<AdminstatesCubit>()
-                                        .totalfacturar);
-                                int numfac = await context
-                                    .read<AdminstatesCubit>()
-                                    .createFactura(factura);
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          content: Text("¿Estas seguro que quieres continuar?"),
+                          actions: [
+                            FlatButton(
+                                onPressed: () async {
+                                  final factura = FacturaEntities(
+                                      numfact: 1,
+                                      codcli: int.parse(context
+                                          .read<AdminstatesCubit>()
+                                          .userEEntities
+                                          .codcli),
+                                      estado: 0,
+                                      tipfac: "true",
+                                      fecha: null,
+                                      codemp: 13,
+                                      balance: 0.0,
+                                      total: context
+                                          .read<AdminstatesCubit>()
+                                          .totalfacturar);
+                                  int numfac = await context
+                                      .read<AdminstatesCubit>()
+                                      .createFactura(factura);
 
-                                List<DetallefactEntities> detalle =
-                                    List<DetallefactEntities>();
-                                _carrito.forEach((element) {
-                                  detalle.add(DetallefactEntities(
-                                      numfac: numfac,
-                                      codproducto:
-                                          int.parse(element.codproducto),
-                                      cantvent: int.parse(element.cantven),
-                                      precvent: double.parse(element.precio),
-                                      coduni: int.parse(element.codunidad)));
-                                });
+                                  List<DetallefactEntities> detalle =
+                                      List<DetallefactEntities>();
+                                  _carrito.forEach((element) {
+                                    detalle.add(DetallefactEntities(
+                                        numfac: numfac,
+                                        codproducto:
+                                            int.parse(element.codproducto),
+                                        cantvent: int.parse(element.cantven),
+                                        precvent: double.parse(element.precio),
+                                        coduni: int.parse(element.codunidad)));
+                                  });
 
-                                await context
-                                    .read<AdminstatesCubit>()
-                                    .createDetalleFactura(detalle);
+                                  await context
+                                      .read<AdminstatesCubit>()
+                                      .createDetalleFactura(detalle);
 
-                                Navigator.of(context).pop();
-                                compraExitosa();
-                              },
-                              child: Text('OK')),
-                          FlatButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('CANCELAR'))
-                        ],
-                      ));
+                                  Navigator.of(context).pop();
+                                  compraExitosa();
+                                },
+                                child: Text('OK')),
+                            FlatButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('CANCELAR'))
+                          ],
+                        );
+                      });
                 },
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(40.0),
@@ -328,8 +330,9 @@ class ListaState extends State<Lista> {
       _carrito.clear();
     });
     showDialog(
-        context: context,
-        child: AlertDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
           scrollable: true,
           content: Container(
             width: 300.0,
@@ -355,6 +358,8 @@ class ListaState extends State<Lista> {
                 },
                 child: Text('ATRÁS'))
           ],
-        ));
+        );
+      },
+    );
   }
 }
